@@ -74,25 +74,32 @@ FORMAT: Return valid JSON only with keys: careers (array of strings), why (array
 CONSTRAINTS: Keep answers concise (max 3 careers). If unsure, provide alternatives and mention assumptions. Use India-relevant colleges or online course names where possible.`;
 
 /* ===========================
-   Prompt templates
-   =========================== */
-
-/* 1) Zero-shot prompt
-   - No examples. Ask model to produce JSON per schema.
+/* 3) Multi-shot prompt
+   - Two or three short examples (contrasting). Then user input.
 */
-const ZERO_SHOT_PROMPT = (userInfo) => {
+const MULTI_SHOT_PROMPT = (userInfo) => {
+  const ex1 = {
+    input: { interests: "design, psychology", skills: "Figma, research", education: "B.Des" },
+    output: {
+      careers: ["UX Designer"],
+      why: ["Design + psychology = user-centred design fit."],
+      next_steps: ["Build UX case studies and a portfolio using Figma."]
+    }
+  };
+  const ex2 = {
+    input: { interests: "data, storytelling", skills: "SQL, Excel", education: "BCom" },
+    output: {
+      careers: ["Data Analyst"],
+      why: ["Data + storytelling fits analyst role translating numbers to insights."],
+      next_steps: ["Learn SQL advanced, make dashboards with PowerBI or Tableau."]
+    }
+  };
+
   return [
     { role: "system", content: SYSTEM_PROMPT_RTFC },
-    { role: "user", content:
-`You are given:
-User Info: ${JSON.stringify(userInfo)}
-
-Produce the JSON response as described in the system prompt.
-###END`
-    }
+    { role: "user", content: `Example 1 Input: ${JSON.stringify(ex1.input)}\nExample 1 Output: ${JSON.stringify(ex1.output)}\n\nExample 2 Input: ${JSON.stringify(ex2.input)}\nExample 2 Output: ${JSON.stringify(ex2.output)}\n\nNow Input: ${JSON.stringify(userInfo)}\nProduce the JSON response as described in the system prompt.\n###END` }
   ];
 };
-
 
 /* ===========================
    Routes
