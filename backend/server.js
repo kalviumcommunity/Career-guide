@@ -39,16 +39,16 @@ async function callChat({ messages, temperature = 0.3, top_p = 0.95, top_k = nul
     // call chat completions
     const res = await openai.chat.completions.create(payload);
 
-    // Token logging (usage)
+  
     const usage = res.usage || {};
     console.log(`[TOKENS] prompt=${usage.prompt_tokens ?? 0} completion=${usage.completion_tokens ?? 0} total=${usage.total_tokens ?? 0}`);
 
-    // Extract text / content
+    
     const choice = res.choices?.[0];
     const message = choice?.message;
-    const content = message?.content;
+    const content = message?.content; 
 
-    // try to parse JSON if it looks like JSON
+  
     let parsed = null;
     if (typeof content === "string") {
       const trimmed = content.trim();
@@ -74,6 +74,61 @@ FORMAT: Return valid JSON only with keys: careers (array of strings), why (array
 CONSTRAINTS: Keep answers concise (max 3 careers). If unsure, provide alternatives and mention assumptions. Use India-relevant colleges or online course names where possible.`;
 
 /* ===========================
+   Prompt templates
+   =========================== */
+
+/* 1) Zero-shot prompt
+   - No examples. Ask model to produce JSON per schema.
+*/
+const ZERO_SHOT_PROMPT = (userInfo) => {
+  return [
+    { role: "system", content: SYSTEM_PROMPT_RTFC },
+    { role: "user", content:
+`You are given:
+User Info: ${JSON.stringify(userInfo)}
+
+Produce the JSON response as described in the system prompt.
+###END`
+    }
+  ];
+};
+
+/* 2) One-shot prompt
+   - One example (input+output), then user case
+*/
+const ONE_SHOT_PROMPT = (userInfo) => {
+  const exampleInput = {
+    interests: "building web apps, algorithms",
+    skills: "JavaScript, Python",
+    education: "3rd year B.Tech CSE"
+  };
+  const exampleOutput = {
+    careers: ["Software Engineer", "Full-stack Developer"],
+    why: [
+      "Strong coding skills and web interests align with software dev roles.",
+      "Full-stack fits with both web and backend interests."
+    ],
+    next_steps: [
+      "Build a small full-stack project and deploy it.",
+      "Take an algorithms & data structures course and practice DS problems."
+    ]
+  };
+
+  return [
+    { role: "system", content: SYSTEM_PROMPT_RTFC },
+    { role: "user", content:
+`Example:
+Input: ${JSON.stringify(exampleInput)}
+Output: ${JSON.stringify(exampleOutput)}
+
+Now your turn:
+Input: ${JSON.stringify(userInfo)}
+Produce the JSON response as described in the system prompt.
+###END`
+    }
+  ];
+};
+
 /* 3) Multi-shot prompt
    - Two or three short examples (contrasting). Then user input.
 */
