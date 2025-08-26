@@ -34,6 +34,7 @@ async function callChat({ messages, temperature = 0.3, top_p = 0.95, top_k = nul
       // note: some providers accept top_k; include only if provided
     };
     if (top_k !== null) payload.top_k = top_k;
+    // Stop sequence
     if (stop !== null) payload.stop = Array.isArray(stop) ? stop : [stop];
 
     // call chat completions
@@ -179,14 +180,14 @@ app.post("/ask", async (req, res) => {
     // Append a short user follow-up to enforce JSON-only answer and stop sequence sentinel
     messages.push({ role: "user", content: "Return only the JSON object. Stop when done. END" });
 
-    const chatRes = await callChat({
+    /*const chatRes = await callChat({
       messages,
       temperature,
       top_p,
       top_k,
       stop: "END",
       max_tokens: 400
-    });
+    });*/
 
     // return parsed if parsed, else content
     res.json({
