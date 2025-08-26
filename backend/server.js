@@ -40,13 +40,13 @@ async function callChat({ messages, temperature = 0.3, top_p = 0.95, top_k = nul
     const res = await openai.chat.completions.create(payload);
 
   
-   /* const usage = res.usage || {};
+    const usage = res.usage || {};
     console.log(`[TOKENS] prompt=${usage.prompt_tokens ?? 0} completion=${usage.completion_tokens ?? 0} total=${usage.total_tokens ?? 0}`);
 
     
     const choice = res.choices?.[0];
     const message = choice?.message;
-    const content = message?.content; */
+    const content = message?.content; 
 
   
     let parsed = null;
