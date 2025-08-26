@@ -73,20 +73,35 @@ TASK: Given a user's Interests, Skills, and Education, recommend 1-3 career opti
 FORMAT: Return valid JSON only with keys: careers (array of strings), why (array of short reasons), next_steps (array of short actionable steps).
 CONSTRAINTS: Keep answers concise (max 3 careers). If unsure, provide alternatives and mention assumptions. Use India-relevant colleges or online course names where possible.`;
 
-/* ===========================
-   Prompt templates
-   =========================== */
 
-/* 1) Zero-shot prompt
-   - No examples. Ask model to produce JSON per schema.
-*/
-const ZERO_SHOT_PROMPT = (userInfo) => {
+/* 2) One-shot prompt*/
+const ONE_SHOT_PROMPT = (userInfo) => {
+  const exampleInput = {
+    interests: "building web apps, algorithms",
+    skills: "JavaScript, Python",
+    education: "3rd year B.Tech CSE"
+  };
+  const exampleOutput = {
+    careers: ["Software Engineer", "Full-stack Developer"],
+    why: [
+      "Strong coding skills and web interests align with software dev roles.",
+      "Full-stack fits with both web and backend interests."
+    ],
+    next_steps: [
+      "Build a small full-stack project and deploy it.",
+      "Take an algorithms & data structures course and practice DS problems."
+    ]
+  };
+
   return [
     { role: "system", content: SYSTEM_PROMPT_RTFC },
     { role: "user", content:
-`You are given:
-User Info: ${JSON.stringify(userInfo)}
+`Example:
+Input: ${JSON.stringify(exampleInput)}
+Output: ${JSON.stringify(exampleOutput)}
 
+Now your turn:
+Input: ${JSON.stringify(userInfo)}
 Produce the JSON response as described in the system prompt.
 ###END`
     }
