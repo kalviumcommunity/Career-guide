@@ -69,11 +69,11 @@ async function callChat({ messages, temperature = 0.3, top_p = 0.95, top_k = nul
  * RTFC System prompt (Role, Task, Format, Constraints)
  * This is a clean system prompt for the Career Bot use case.
  */
-/*const SYSTEM_PROMPT_RTFC = `ROLE: You are the AI Career Guide Bot.
+const SYSTEM_PROMPT_RTFC = `ROLE: You are the AI Career Guide Bot.
 TASK: Given a user's Interests, Skills, and Education, recommend 1-3 career options and short next steps.
 FORMAT: Return valid JSON only with keys: careers (array of strings), why (array of short reasons), next_steps (array of short actionable steps).
 CONSTRAINTS: Keep answers concise (max 3 careers). If unsure, provide alternatives and mention assumptions. Use India-relevant colleges or online course names where possible.`;
-*/
+
 /* ===========================
    Prompt templates
    =========================== */
@@ -81,7 +81,7 @@ CONSTRAINTS: Keep answers concise (max 3 careers). If unsure, provide alternativ
 /* 1) Zero-shot prompt
    - No examples. Ask model to produce JSON per schema.
 */
-/*const ZERO_SHOT_PROMPT = (userInfo) => {
+const ZERO_SHOT_PROMPT = (userInfo) => {
   return [
     { role: "system", content: SYSTEM_PROMPT_RTFC },
     { role: "user", content:
@@ -92,7 +92,7 @@ Produce the JSON response as described in the system prompt.
 ###END`
     }
   ];
-};*/
+};
 
 /* 2) One-shot prompt
    - One example (input+output), then user case
