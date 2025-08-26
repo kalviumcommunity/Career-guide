@@ -183,8 +183,7 @@ app.post("/ask", async (req, res) => {
     const chatRes = await callChat({
       messages,
       temperature,
-      top_p,
-      // top_k,
+       top_k,
       stop: "END",
       max_tokens: 400
     });
