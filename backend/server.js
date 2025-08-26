@@ -34,7 +34,7 @@ async function callChat({ messages, temperature = 0.3, top_p = 0.95, top_k = nul
       // note: some providers accept top_k; include only if provided
     };
     if (top_k !== null) payload.top_k = top_k;
-    if (stop !== null) payload.stop = Array.isArray(stop) ? stop : [stop];
+    // if (stop !== null) payload.stop = Array.isArray(stop) ? stop : [stop];
 
     // call chat completions
     const res = await openai.chat.completions.create(payload);
